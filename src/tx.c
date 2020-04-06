@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <radiotap.h>
+// #include <radiotap.h>
 
 #include "tx.h"
 #include "sync.h"
@@ -294,6 +294,7 @@ int awdl_init_version_tlv(uint8_t *buf, const struct awdl_state *state) {
 	return sizeof(struct awdl_version_tlv);
 }
 
+#if 0
 int ieee80211_init_radiotap_header(uint8_t *buf) {
 	/*
 	 * TX radiotap headers and mac80211
@@ -317,6 +318,7 @@ int ieee80211_init_radiotap_header(uint8_t *buf) {
 
 	return ptr - buf;
 }
+#endif
 
 int ieee80211_init_awdl_hdr(uint8_t *buf, const struct ether_addr *src, const struct ether_addr *dst,
                             struct ieee80211_state *state, uint16_t type) {
@@ -364,7 +366,7 @@ int awdl_init_full_action_frame(uint8_t *buf, struct awdl_state *state, struct i
                                 enum awdl_action_type type) {
 	uint8_t *ptr = buf;
 
-	ptr += ieee80211_init_radiotap_header(ptr);
+	// ptr += ieee80211_init_radiotap_header(ptr);
 	ptr += ieee80211_init_awdl_action_hdr(ptr, &state->self_address, &state->dst, ieee80211_state);
 	ptr += awdl_init_action(ptr, type);
 	ptr += awdl_init_sync_params_tlv(ptr, state);
@@ -389,7 +391,7 @@ int awdl_init_full_data_frame(uint8_t *buf, const struct ether_addr *src, const 
                               struct awdl_state *state, struct ieee80211_state *ieee80211_state) {
 	uint8_t *ptr = buf;
 
-	ptr += ieee80211_init_radiotap_header(ptr);
+	// ptr += ieee80211_init_radiotap_header(ptr);
 	ptr += ieee80211_init_awdl_data_hdr(ptr, src, dst, ieee80211_state);
 	ptr += llc_init_awdl_hdr(ptr);
 	ptr += awdl_init_data(ptr, state);
