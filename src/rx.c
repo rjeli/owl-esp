@@ -20,9 +20,9 @@
 #include <string.h>
 #include <errno.h>
 #include <netinet/in.h>
-#include <netinet/ip6.h>
-#include <radiotap.h>
-#include <radiotap_iter.h>
+// #include <netinet/ip6.h>
+// #include <radiotap.h>
+// #include <radiotap_iter.h>
 
 #include "rx.h"
 #include "sync.h"
@@ -418,6 +418,7 @@ wire_error:
 }
 
 static int radiotap_parse(const struct buf *frame, signed char *rssi, uint8_t *flags, uint64_t *tsft) {
+#if 0
 	struct ieee80211_radiotap_iterator iter;
 	int err;
 
@@ -450,10 +451,12 @@ static int radiotap_parse(const struct buf *frame, signed char *rssi, uint8_t *f
 	if (err != -ENOENT)
 		return RX_UNEXPECTED_FORMAT;
 
+#endif
 	return RX_OK;
 }
 
 static int check_fcs(const struct buf *frame, uint8_t radiotap_flags) {
+#if 0
 	if (radiotap_flags & IEEE80211_RADIOTAP_F_BADFCS)
 		return -1;
 	if (radiotap_flags & IEEE80211_RADIOTAP_F_FCS)
@@ -461,6 +464,8 @@ static int check_fcs(const struct buf *frame, uint8_t radiotap_flags) {
 	return 0;
 wire_error:
 	return -1;
+#endif
+    return 0;
 }
 
 int awdl_rx(const struct buf *frame, struct buf ***data_frame, struct awdl_state *state) {
@@ -474,7 +479,7 @@ int awdl_rx(const struct buf *frame, struct buf ***data_frame, struct awdl_state
 	tsft = clock_time_us(); /* TODO Radiotap TSFT is more accurate but then need to access TSF in clock_time_us() */
 	if (radiotap_parse(frame, &rssi, &flags, NULL /* &tsft */) < 0)
 		return RX_UNEXPECTED_FORMAT;
-	BUF_STRIP(frame, le16toh(((const struct ieee80211_radiotap_header *) buf_data(frame))->it_len));
+	// BUF_STRIP(frame, le16toh(((const struct ieee80211_radiotap_header *) buf_data(frame))->it_len));
 
 	if (check_fcs(frame, flags)) /* note that if no flags are present (flags==0), frames will pass */
 		return RX_IGNORE_FAILED_CRC;

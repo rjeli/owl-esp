@@ -92,6 +92,13 @@ unsigned int ieee80211_state_next_sequence_number(struct ieee80211_state *state)
 	return seq;
 };
 
+#if 1
+// esp time
+#include "esp_timer.h"
+uint64_t clock_time_us() {
+    return (uint64_t) esp_timer_get_time();
+}
+#else
 uint64_t clock_time_us() {
 	int result;
 	struct timespec now;
@@ -105,3 +112,4 @@ uint64_t clock_time_us() {
 	}
 	return now_us;
 }
+#endif
